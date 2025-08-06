@@ -12,7 +12,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $data = [
+            'categories' => Category::all(),
+            'menu' => 'Kategori',
+            'submenu' => 'Daftar Kategori',
+        ];
+
+        return view('backend.categories.index', $data);
     }
 
     /**
