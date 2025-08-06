@@ -12,7 +12,7 @@
                         @csrf
 
                         <div class="mb-5">
-                            <label for="name" class="form-label">Nama Kategori</label>
+                            <label for="name" class="form-label">Nama</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
                                 name="name" placeholder="Masukkan nama kategori" value="{{ old('name') }}">
 

@@ -10,6 +10,16 @@
                         <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
                     </a>
                 </div>
+
+                <div class="px-4">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible show fw-bold" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
