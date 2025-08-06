@@ -26,7 +26,12 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $data = [
+            'menu' => 'Kategori',
+            'submenu' => 'Tambah Kategori',
+        ];
+
+        return view('backend.categories.create', $data);
     }
 
     /**

@@ -4,8 +4,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card mb-4">
-                <div class="card-header pb-0 mb-3">
-                    <h6>Daftar Kategori</h6>
+                <div class="card-header pb-0 mb-3 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fs-4 fw-bolder">Daftar Kategori</h6>
+                    <a href="{{ route('category.create') }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Kategori
+                    </a>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
@@ -44,24 +47,29 @@
                                             <span
                                                 class="text-secondary text-xs font-weight-bold">{{ $category->created_at }}</span>
                                         </td>
-                                        <td class="align-middle justify-center gap-2 text-center text-sm flex">
+                                        <td class="align-middle pt-4 justify-center text-center text-sm flex">
                                             <a href="{{ route('category.edit', $category->slug) }}"
-                                                class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md text-xs font-medium">
+                                                class="btn btn-warning btn-sm">
                                                 Edit
                                             </a>
 
                                             <form action="{{ route('category.destroy', $category->slug) }}" method="POST"
+                                                class="d-inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit"
-                                                    class="inline-block bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs font-medium">
+                                                <button type="submit" class="btn btn-danger btn-sm">
                                                     Hapus
                                                 </button>
                                             </form>
                                         </td>
                                     </tr>
                                 @empty
+                                    <tr>
+                                        <td class="text-dark text-center py-3 text-lg" colspan="4">Belum ada data
+                                            kategori.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
