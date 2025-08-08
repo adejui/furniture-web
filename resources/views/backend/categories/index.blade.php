@@ -58,7 +58,7 @@
                                                 class="text-secondary text-xs font-weight-bold">{{ $category->created_at }}</span>
                                         </td>
                                         <td class="align-middle pt-4 justify-center text-center text-sm flex">
-                                            <a href="{{ route('category.edit', $category->slug) }}"
+                                            <a href="{{ route('category.edit', $category->id) }}"
                                                 class="btn btn-warning btn-sm">
                                                 Edit
                                             </a>
