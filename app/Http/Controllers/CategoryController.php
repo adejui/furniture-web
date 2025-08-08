@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -66,15 +67,29 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        $data = [
+            'menu' => 'Kategori',
+            'submenu' => 'Edit Kategori',
+            'category' => $category
+        ];
+
+        return view('backend.categories.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //
+        DB::transaction(function () use ($request, $category) {
+            $validated = $request->validated();
+
+            $validated['slug'] = Str::slug($validated['name']);
+
+            $category->update($validated);
+        });
+
+        return redirect()->route('category.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
