@@ -97,6 +97,10 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        DB::transaction(function () use ($category) {
+            $category->delete();
+        });
+
+        return redirect()->route('category.index')->with('destroy', 'Kategori berhasil dihapus.');
     }
 }

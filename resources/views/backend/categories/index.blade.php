@@ -13,8 +13,18 @@
 
                 <div class="px-4">
                     @if (session('success'))
-                        <div class="alert alert-success alert-dismissible show fw-bold" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show fw-bold" role="alert"
+                            style="background-image: none;">
                             {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+                <div class="px-4">
+                    @if (session('destroy'))
+                        <div class="alert alert-danger alert-dismissible fade show fw-bold" role="alert"
+                            style="background-image: none;">
+                            {{ session('destroy') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
@@ -63,7 +73,7 @@
                                                 Edit
                                             </a>
 
-                                            <form action="{{ route('category.destroy', $category->slug) }}" method="POST"
+                                            <form action="{{ route('category.destroy', $category->id) }}" method="POST"
                                                 class="d-inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                                 @csrf
