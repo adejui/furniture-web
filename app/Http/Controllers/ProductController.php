@@ -12,7 +12,14 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+
+        $data = [
+            'products' => Product::all(),
+            'menu' => 'Produk',
+            'submenu' => 'Daftar Produk',
+        ];
+
+        return view('backend.products.index', $data);
     }
 
     /**
