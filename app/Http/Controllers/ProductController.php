@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\ProductImage;
 use Illuminate\Support\Str;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
@@ -87,15 +89,58 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $product->load('productImages');
+
+        $data = [
+            'categories' => Category::all(),
+            'menu'       => 'Produk',
+            'submenu'    => 'Edit Produk',
+            'product'    => $product,
+        ];
+
+        return view('backend.products.edit', $data);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        DB::transaction(function () use ($request, $product) {
+            $validated = $request->validated();
+            $validated['slug'] = Str::slug($validated['name']);
+
+            // Update data produk
+            $product->update($validated);
+
+            // Cek kalau ada gambar baru
+            if ($request->hasFile('image_url')) {
+                // 1. Hapus semua gambar lama dari storage
+                foreach ($product->productImages as $oldImage) {
+                    if (Storage::disk('public')->exists($oldImage->image_url)) {
+                        Storage::disk('public')->delete($oldImage->image_url);
+                    }
+                }
+
+                // 2. Hapus data gambar lama dari database
+                $product->productImages()->delete();
+
+                // 3. Simpan gambar baru
+                foreach ($request->file('image_url') as $index => $file) {
+                    $path = $file->store('products', 'public');
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_url'  => $path,
+                        'is_main'    => $index === 0 ? 1 : 0 // gambar pertama jadi utama
+                    ]);
+                }
+            }
+        });
+
+        return redirect()
+            ->route('product.index')
+            ->with('success', 'Produk berhasil diperbarui');
     }
 
     /**
