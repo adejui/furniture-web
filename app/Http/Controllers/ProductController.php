@@ -148,6 +148,22 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        DB::transaction(function () use ($product) {
+            // Hapus semua foto produk dari storage
+            foreach ($product->productImages as $image) {
+                if (Storage::disk('public')->exists($image->image_url)) {
+                    Storage::disk('public')->delete($image->image_url);
+                }
+            }
+
+            // Hapus data gambar dari database
+            $product->productImages()->delete();
+
+            // Hapus data produk
+            $product->delete();
+        });
+
+        return redirect()->route('product.index')
+            ->with('destroy', 'Produk berhasil dihapus.');
     }
 }
