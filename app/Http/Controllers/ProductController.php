@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\ProductImage;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -27,15 +32,46 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $data = [
+            'categories' => Category::all(),
+            'menu' => 'Produk',
+            'submenu' => 'Tambah Produk',
+        ];
+
+        return view('backend.products.create', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        // dd($request->all());
+
+        DB::transaction(function () use ($request) {
+            $validated = $request->validated();
+
+            $validated['slug'] = Str::slug($validated['name']);
+
+            $product = Product::create($validated);
+
+            // Simpan gambar
+            if ($request->hasFile('image_url')) {
+                foreach ($request->file('image_url') as $index => $file) {
+                    if ($file) {
+                        $path = $file->store('products', 'public');
+
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_url' => $path,
+                            'is_main'    => $index === 0 ? 1 : 0, // gambar pertama is_main = 1
+                        ]);
+                    }
+                }
+            }
+        });
+
+        return redirect()->route('product.index')->with('success', 'Produk baru berhasil ditambahkan.');
     }
 
     /**
