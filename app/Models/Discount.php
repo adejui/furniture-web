@@ -25,6 +25,15 @@ class Discount extends Model
         return $this->value;
     }
 
+    protected static function booted()
+    {
+        static::retrieved(function ($discount) {
+            if ($discount->end_date && now()->gt($discount->end_date) && $discount->is_active) {
+                $discount->update(['is_active' => 0]);
+            }
+        });
+    }
+
     public function productDiscounts()
     {
         return $this->hasOne(ProductDiscount::class);

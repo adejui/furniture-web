@@ -6,6 +6,7 @@ use App\Models\Discount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreDiscountRequest;
+use App\Http\Requests\UpdateDiscountRequest;
 
 class DiscountController extends Controller
 {
@@ -63,15 +64,27 @@ class DiscountController extends Controller
      */
     public function edit(Discount $discount)
     {
-        //
+        $data = [
+            'discount' => $discount,
+            'menu' => 'Diskon',
+            'submenu' => 'Edit Diskon'
+        ];
+
+        return view('backend.discounts.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Discount $discount)
+    public function update(UpdateDiscountRequest $request, Discount $discount)
     {
-        //
+        DB::transaction(function () use ($request, $discount) {
+            $validated = $request->validated();
+
+            $discount->update($validated);
+        });
+
+        return redirect()->route('discount.index')->with('success', 'Diskon berhasil diperbarui.');
     }
 
     /**
