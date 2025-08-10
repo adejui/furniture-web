@@ -12,7 +12,14 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+
+        $data = [
+            'orders' => Order::paginate(10),
+            'menu' => 'Pesanan',
+            'submenu' => 'Daftar Pesanan',
+        ];
+
+        return view('backend.orders.index', $data);
     }
 
     /**
