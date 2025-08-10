@@ -6,7 +6,7 @@
             <div class="card mb-4">
                 <div class="card-header pb-0 mb-3 d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 fs-4 fw-bolder">Daftar Diskon</h6>
-                    <a href="{{ route('category.create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('discount.create') }}" class="btn btn-primary btn-sm">
                         <i class="bi bi-plus-circle me-1"></i> Tambah Diskon
                     </a>
                 </div>

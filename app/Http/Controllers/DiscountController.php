@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Discount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreDiscountRequest;
 
 class DiscountController extends Controller
 {
@@ -26,15 +28,26 @@ class DiscountController extends Controller
      */
     public function create()
     {
-        //
+        $data = [
+            'menu' => 'Diskon',
+            'submenu' => 'Tambah Diskon'
+        ];
+
+        return view('backend.discounts.create', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDiscountRequest $request)
     {
-        //
+        DB::transaction(function () use ($request) {
+            $validated = $request->validated();
+
+            Discount::create($validated);
+        });
+
+        return redirect()->route('discount.index')->with('success', 'Diskon baru berhasil ditambahkan.');
     }
 
     /**
