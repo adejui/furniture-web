@@ -5,7 +5,7 @@
         <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="card-header pb-0 mb-3 d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0 fs-4 fw-bolder">Tambah Diskon</h6>
+                    <h6 class="mb-0 fs-4 fw-bolder">Edit Diskon</h6>
                 </div>
                 <div class="card-body px-4 pt-0 pb-2">
                     <form action="{{ route('discount.update', $discount->id) }}" method="POST">

@@ -92,6 +92,10 @@ class DiscountController extends Controller
      */
     public function destroy(Discount $discount)
     {
-        //
+        DB::transaction(function () use ($discount) {
+            $discount->delete();
+        });
+
+        return redirect()->route('discount.index')->with('destroy', 'Diskon berhasil dihapus.');
     }
 }
