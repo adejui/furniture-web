@@ -21,7 +21,7 @@ class ProductController extends Controller
     {
 
         $data = [
-            'products' => Product::all(),
+            'products' => Product::paginate(10),
             'menu' => 'Produk',
             'submenu' => 'Daftar Produk',
         ];

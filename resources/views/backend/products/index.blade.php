@@ -103,14 +103,16 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td class="text-dark text-center py-3 text-lg" colspan="4">Belum ada data
-                                            kategori.
+                                        <td class="text-dark text-center py-3 text-lg" colspan="4">Belum ada Produk.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="px-3">
+                    {{ $products->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

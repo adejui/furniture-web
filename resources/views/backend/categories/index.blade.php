@@ -95,6 +95,9 @@
                         </table>
                     </div>
                 </div>
+                <div class="px-3">
+                    {{ $categories->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>

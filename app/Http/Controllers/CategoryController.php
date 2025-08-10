@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function index()
     {
         $data = [
-            'categories' => Category::all(),
+            'categories' => Category::paginate(10),
             'menu' => 'Kategori',
             'submenu' => 'Daftar Kategori',
         ];
