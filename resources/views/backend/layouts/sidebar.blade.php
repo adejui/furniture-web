@@ -97,7 +97,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  " href="../pages/sign-up.html">
+                <a class="nav-link {{ Route::is('discount.index', 'discount.create', 'discount.edit') ? 'active' : '' }}"
+                    href="{{ route('discount.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1"
@@ -126,7 +127,7 @@
                             </g>
                         </svg>
                     </div>
-                    <span class="nav-link-text ms-1">Promo</span>
+                    <span class="nav-link-text ms-1">Diskon</span>
                 </a>
             </li>
             <li class="nav-item">

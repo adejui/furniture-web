@@ -12,6 +12,19 @@ class Discount extends Model
 
     protected $guarded = ['id'];
 
+    public function getFormattedValueAttribute()
+    {
+        if ($this->discount_type === 'percentage') {
+            return $this->value . '%';
+        }
+
+        if ($this->discount_type === 'fixed') {
+            return 'Rp' . number_format($this->value, 0, ',', '.');
+        }
+
+        return $this->value;
+    }
+
     public function productDiscounts()
     {
         return $this->hasOne(ProductDiscount::class);

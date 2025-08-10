@@ -12,7 +12,13 @@ class DiscountController extends Controller
      */
     public function index()
     {
-        //
+        $data = [
+            'discounts' => Discount::paginate(10),
+            'menu' => 'Diskon',
+            'submenu' => 'Daftar Diskon'
+        ];
+
+        return view('backend.discounts.index', $data);
     }
 
     /**
