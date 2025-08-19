@@ -103,7 +103,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td class="text-dark text-center py-3 text-lg" colspan="4">Belum ada Produk.
+                                        <td class="text-dark text-center py-3 text-lg" colspan="6">Belum ada Produk.
                                         </td>
                                     </tr>
                                 @endforelse

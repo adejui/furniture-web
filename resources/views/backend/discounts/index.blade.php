@@ -111,7 +111,7 @@
                                 @empty
                                     <tr>
                                         <td class="text-dark text-center py-3 text-lg" colspan="7">Belum ada data
-                                            Promo.
+                                            Diskon.
                                         </td>
                                     </tr>
                                 @endforelse
