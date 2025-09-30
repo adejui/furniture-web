@@ -69,8 +69,7 @@ class OrderController extends Controller
                 $product = Product::findOrFail($item['product_id']);
                 $price   = $product->price;
 
-                $discount = $item['discount_amount'] ?? 0;
-                $subtotal = ($price - $discount) * $item['quantity'];
+                $subtotal = $price * $item['quantity'];
                 $total   += $subtotal;
 
                 OrderItem::create([
@@ -78,7 +77,6 @@ class OrderController extends Controller
                     'product_id'      => $item['product_id'],
                     'quantity'        => $item['quantity'],
                     'price'           => $price,
-                    'discount_amount' => $discount,
                 ]);
             }
 

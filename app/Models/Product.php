@@ -13,6 +13,27 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    // Harga setelah diskon otomatis
+    public function getFinalPriceAttribute()
+    {
+        if (!$this->discount || !$this->discount->is_active) {
+            return $this->price;
+        }
+
+        $now = now();
+        if ($now->lt($this->discount->start_date) || $now->gt($this->discount->end_date)) {
+            return $this->price;
+        }
+
+        if ($this->discount->discount_type === 'percentage') {
+            $discountAmount = $this->price * ($this->discount->value / 100);
+        } else {
+            $discountAmount = $this->discount->value;
+        }
+
+        return max($this->price - $discountAmount, 0); // harga minimal 0
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -31,6 +52,11 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
     }
 
     public function productDiscount()
