@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Discount;
 
 class ProductController extends Controller
 {
@@ -36,6 +37,7 @@ class ProductController extends Controller
     {
         $data = [
             'categories' => Category::all(),
+            'discounts' => Discount::where('is_active', 1)->get(),
             'menu' => 'Produk',
             'submenu' => 'Tambah Produk',
         ];
@@ -93,6 +95,7 @@ class ProductController extends Controller
 
         $data = [
             'categories' => Category::all(),
+            'discounts' => Discount::where('is_active', 1)->get(),
             'menu'       => 'Produk',
             'submenu'    => 'Edit Produk',
             'product'    => $product,

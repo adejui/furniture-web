@@ -77,6 +77,32 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
+                                <div class="mb-3">
+                                    <label for="discount_id" class="form-label">Diskon</label>
+                                    <select name="discount_id" id="discount_id"
+                                        class="form-control @error('discount_id') is-invalid @enderror">
+                                        <option value="0"
+                                            {{ old('discount_id', $product->discount_id ?? '') == 0 ? 'selected' : '' }}>
+                                            Tanpa Diskon
+                                        </option>
+                                        @forelse ($discounts as $discount)
+                                            <option value="{{ $discount->id }}"
+                                                {{ old('discount_id', $product->discount_id ?? '') == $discount->id ? 'selected' : '' }}>
+                                                {{ $discount->name }} - {{ $discount->formatted_value }}
+                                            </option>
+                                        @empty
+                                            <option value="">-- tidak ada diskon --</option>
+                                        @endforelse
+                                    </select>
+                                    @error('discount_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+
                             </div>
                         </div>
 
