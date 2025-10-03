@@ -131,7 +131,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::is('order.index', 'order.create', 'order.edit') ? 'active' : '' }}"
+                <a class="nav-link {{ Route::is('order.index', 'order.create', 'order.edit', 'order.show') ? 'active' : '' }}"
                     href="{{ route('order.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -159,7 +159,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  " href="../pages/profile.html">
+                <a class="nav-link {{ Route::is('user.index', 'user.create', 'user.edit') ? 'active' : '' }}"
+                    href="{{ route('user.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
