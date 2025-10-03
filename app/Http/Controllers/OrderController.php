@@ -169,6 +169,16 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        DB::transaction(function () use ($order) {
+
+            // Hapus order_items dulu
+            $order->orderItems()->delete();
+
+            // Baru hapus order
+            $order->delete();
+        });
+
+        return redirect()->route('order.index')
+            ->with('destroy', 'Pesanan berhasil dihapus.');
     }
 }
