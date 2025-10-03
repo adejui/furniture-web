@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Product;
 
 class OrderController extends Controller
@@ -100,16 +101,68 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        $order->load('orderItems');
+
+        $data = [
+            'users' => User::whereNot('role', 'admin')->get(),
+            'order' => $order,
+            'products' => Product::all(),
+            'menu' => 'Pesanan',
+            'submenu' => 'Edit Pesanan',
+        ];
+
+        return view('backend.orders.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        DB::transaction(function () use ($request, $order) {
+            $validated = $request->validated();
+
+            // Update data orders (kecuali items)
+            $order->update([
+                'status'           => $validated['status'] ?? $order->status,
+                'shipping_name'    => $validated['shipping_name'],
+                'shipping_phone'   => $validated['shipping_phone'],
+                'shipping_address' => $validated['shipping_address'],
+                'user_id'          => $validated['user_id'],
+            ]);
+
+            $total = 0;
+
+            if (!empty($validated['items'])) {
+                // Hapus item lama
+                $order->orderItems()->delete();
+
+                // Insert item baru
+                foreach ($validated['items'] as $item) {
+                    $product = Product::findOrFail($item['product_id']);
+                    $price   = $product->price;
+
+                    $subtotal = $price * $item['quantity'];
+                    $total   += $subtotal;
+
+                    $order->orderItems()->create([
+                        'product_id' => $item['product_id'],
+                        'quantity'   => $item['quantity'],
+                        'price'      => $price,
+                    ]);
+                }
+            } else {
+                // kalau tidak ada items dikirim, total = tetap
+                $total = $order->orderItems()->sum(DB::raw('price * quantity'));
+            }
+
+            // Update total price order
+            $order->update(['total_price' => $total]);
+        });
+
+        return redirect()->route('order.index')->with('success', 'Pesanan berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
