@@ -93,7 +93,15 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $order->load(['orderItems.product', 'user']);
+
+        $data = [
+            'order' => $order,
+            'menu' => 'Pesanan',
+            'submenu' => 'Detail Pesanan',
+        ];
+
+        return view('backend.orders.detail', $data);
     }
 
     /**
