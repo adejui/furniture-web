@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -74,17 +76,68 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        $data = [
+            'user' => $user,
+            'menu' => 'Edit Pelanggan',
+            'submenu' => 'Edit Pelanggan',
+        ];
+
+        return view('backend.users.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        DB::beginTransaction();
+        try {
+            // Ambil data yang sudah tervalidasi dari Form Request
+            $validated = $request->validated();
+
+            // ======== LOGIKA PASSWORD ======== //
+            $isChangingPassword = $request->filled('old_password') || $request->filled('password') || $request->filled('password_confirmation');
+
+            if ($isChangingPassword) {
+                // Semua field wajib diisi
+                if (!$request->filled('old_password') || !$request->filled('password') || !$request->filled('password_confirmation')) {
+                    return back()->withErrors(['password' => 'Semua field password wajib diisi jika ingin mengganti password.'])->withInput();
+                }
+
+                // Cek apakah password lama cocok
+                if (!Hash::check($request->old_password, $user->password)) {
+                    return back()->withErrors(['old_password' => 'Password lama tidak sesuai.'])->withInput();
+                }
+
+                // Hash password baru dan masukkan ke array validated
+                $validated['password'] = bcrypt($request->password);
+            } else {
+                // Kalau tidak mau ganti password, hapus field-nya
+                unset($validated['password']);
+            }
+
+            // ======== LOGIKA AVATAR ======== //
+            if ($request->hasFile('avatar')) {
+                // hapus foto lama (kecuali default)
+                if ($user->avatar && $user->avatar !== 'users/default-avatar.png') {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+
+                // simpan foto baru
+                $validated['avatar'] = $request->file('avatar')->store('users', 'public');
+            }
+
+            // ======== UPDATE USER ======== //
+            $user->update($validated);
+
+            DB::commit();
+            return redirect()->route('user.index')->with('success', 'Data pelanggan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
