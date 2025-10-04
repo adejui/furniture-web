@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -26,15 +28,38 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $data = [
+            'menu' => 'Tambah Pelanggan',
+            'submenu' => 'Tambah Pelanggan',
+        ];
+
+        return view('backend.users.create', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        // dd($request->all());
+        DB::transaction(function () use ($request) {
+            $validated = $request->validated();
+
+            $validated['role'] = 'user';
+
+            // cek apakah ada file avatar
+            if ($request->hasFile('avatar')) {
+                $path = $request->file('avatar')->store('users', 'public');
+                $validated['avatar'] = $path;
+            } else {
+                // default avatar
+                $validated['avatar'] = 'users/default-avatar.png';
+            }
+
+            User::create($validated);
+        });
+
+        return redirect()->route('user.index')->with('success', 'Pelanggan baru berhasil ditambahkan.');
     }
 
     /**
