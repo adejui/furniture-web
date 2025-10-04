@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -91,6 +92,21 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::transaction(function () use ($id) {
+            $user = User::findOrFail($id);
+
+            // Hapus foto user dari storage jika bukan default
+            if ($user->avatar && $user->avatar !== 'users/default-avatar.png') {
+                if (Storage::disk('public')->exists($user->avatar)) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+            }
+
+            // Hapus user dari database
+            $user->delete();
+        });
+
+        return redirect()->route('user.index')
+            ->with('destroy', 'Pelanggan berhasil dihapus.');
     }
 }
