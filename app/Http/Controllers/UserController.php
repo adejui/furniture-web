@@ -18,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         $data = [
-            'menu' => 'Daftar Pelanggan',
+            'menu' => 'Pelanggan',
             'submenu' => 'Daftar Pelanggan',
             'users' => User::where('role', '!=', 'admin')->paginate(10),
         ];
