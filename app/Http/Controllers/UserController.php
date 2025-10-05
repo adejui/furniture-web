@@ -68,9 +68,15 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        $data = [
+            'user' => $user,
+            'menu' => 'Detail Pelanggan',
+            'submenu' => 'Detail Pelanggan',
+        ];
+
+        return view('backend.users.detail', $data);
     }
 
     /**
